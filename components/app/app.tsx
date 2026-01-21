@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react"
+import React from 'react';
 import { useMemo } from 'react';
 import { TokenSource } from 'livekit-client';
 import { useSession } from '@livekit/components-react';
@@ -42,27 +42,27 @@ export function App({ appConfig }: AppProps) {
 
   return (
     // <ToolCallProvider>
-      <AgentSessionProvider session={session}>
-        <AppSetup />
-        <main className="grid h-svh grid-cols-1 place-content-center">
-          <ViewController appConfig={appConfig} />
-        </main>
-        <StartAudioButton label="Start Audio" />
-        <Toaster
-          icons={{
-            warning: <WarningIcon weight="bold" />,
-          }}
-          position="top-center"
-          className="toaster group"
-          style={
-            {
-              '--normal-bg': 'var(--popover)',
-              '--normal-text': 'var(--popover-foreground)',
-              '--normal-border': 'var(--border)',
-            } as React.CSSProperties
-          }
-        />
-      </AgentSessionProvider>
+    <AgentSessionProvider session={session}>
+      <AppSetup />
+      <main className="grid h-svh grid-cols-1 place-content-center">
+        <ViewController appConfig={appConfig} />
+      </main>
+      <StartAudioButton label="Start Audio" />
+      <Toaster
+        icons={{
+          warning: <WarningIcon weight="bold" />,
+        }}
+        position="top-center"
+        className="toaster group"
+        style={
+          {
+            '--normal-bg': 'var(--popover)',
+            '--normal-text': 'var(--popover-foreground)',
+            '--normal-border': 'var(--border)',
+          } as React.CSSProperties
+        }
+      />
+    </AgentSessionProvider>
     // </ToolCallProvider>
   );
 }

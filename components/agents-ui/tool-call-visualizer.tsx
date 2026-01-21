@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { CheckCircle, XCircle, Clock } from '@phosphor-icons/react/dist/ssr';
+import { CheckCircle, Clock, XCircle } from '@phosphor-icons/react/dist/ssr';
 import { cn } from '@/lib/shadcn/utils';
 
 export interface ToolCall {
@@ -68,9 +68,7 @@ export function ToolCallVisualizer({
         );
       case 'pending':
       default:
-        return (
-          <div className="size-5 rounded-full border-2 border-muted-foreground/30" />
-        );
+        return <div className="border-muted-foreground/30 size-5 rounded-full border-2" />;
     }
   }, []);
 
@@ -91,7 +89,7 @@ export function ToolCallVisualizer({
   return (
     <MotionContainer
       className={cn(
-        'flex flex-col gap-3 rounded-lg border border-border bg-card/50 p-4 backdrop-blur-sm',
+        'border-border bg-card/50 flex flex-col gap-3 rounded-lg border p-4 backdrop-blur-sm',
         className
       )}
       initial={{ opacity: 0, y: 10 }}
@@ -99,16 +97,13 @@ export function ToolCallVisualizer({
       transition={{ duration: 0.3 }}
     >
       <div className="flex items-center gap-2">
-        <h3 className="text-sm font-semibold text-foreground">Agent Actions</h3>
-        <div className="ml-auto text-xs text-muted-foreground">
+        <h3 className="text-foreground text-sm font-semibold">Agent Actions</h3>
+        <div className="text-muted-foreground ml-auto text-xs">
           {toolCalls.length} {toolCalls.length === 1 ? 'action' : 'actions'}
         </div>
       </div>
 
-      <div
-        ref={containerRef}
-        className="flex max-h-96 flex-col gap-2 overflow-y-auto"
-      >
+      <div ref={containerRef} className="flex max-h-96 flex-col gap-2 overflow-y-auto">
         <AnimatePresence mode="popLayout">
           {visibleToolCalls.map((toolCall, index) => (
             <MotionCard
@@ -123,24 +118,18 @@ export function ToolCallVisualizer({
                 getStatusColor(toolCall.status)
               )}
             >
-              <div className="mt-0.5 flex-shrink-0">
-                {getStatusIcon(toolCall.status)}
-              </div>
+              <div className="mt-0.5 flex-shrink-0">{getStatusIcon(toolCall.status)}</div>
 
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {toolCall.name}
-                    </p>
+                    <p className="text-foreground truncate text-sm font-medium">{toolCall.name}</p>
                     {toolCall.statusText && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {toolCall.statusText}
-                      </p>
+                      <p className="text-muted-foreground mt-1 text-xs">{toolCall.statusText}</p>
                     )}
                   </div>
                   <div className="flex-shrink-0 text-right">
-                    <p className="text-xs text-muted-foreground whitespace-nowrap">
+                    <p className="text-muted-foreground text-xs whitespace-nowrap">
                       {new Date(toolCall.timestamp).toLocaleTimeString([], {
                         hour: '2-digit',
                         minute: '2-digit',
@@ -151,10 +140,8 @@ export function ToolCallVisualizer({
                 </div>
 
                 {toolCall.error && (
-                  <div className="mt-2 rounded bg-background/50 p-2">
-                    <p className="text-xs text-destructive font-mono">
-                      {toolCall.error}
-                    </p>
+                  <div className="bg-background/50 mt-2 rounded p-2">
+                    <p className="text-destructive font-mono text-xs">{toolCall.error}</p>
                   </div>
                 )}
               </div>
@@ -164,7 +151,7 @@ export function ToolCallVisualizer({
 
         {toolCalls.length === 0 && (
           <div className="flex items-center justify-center py-8 text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Tool calls will appear here as the agent performs actions
             </p>
           </div>
