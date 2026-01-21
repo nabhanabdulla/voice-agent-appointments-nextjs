@@ -10,6 +10,7 @@ import {
 } from '@livekit/components-react';
 import { AgentAudioVisualizerBar } from '@/components/agents-ui/agent-audio-visualizer-bar';
 import { cn } from '@/lib/shadcn/utils';
+import { StatementSync } from 'node:sqlite';
 
 const MotionContainer = motion.create('div');
 
@@ -79,6 +80,7 @@ export function TileLayout({ chatOpen }: TileLayoutProps) {
     audioTrack: agentAudioTrack,
     videoTrack: agentVideoTrack,
   } = useVoiceAssistant();
+  console.log(agentState, agentAudioTrack, agentVideoTrack)
   const [screenShareTrack] = useTracks([Track.Source.ScreenShare]);
   const cameraTrack: TrackReference | undefined = useLocalTrackRef(Track.Source.Camera);
 

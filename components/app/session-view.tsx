@@ -8,10 +8,47 @@ import {
   AgentControlBar,
   type AgentControlBarControls,
 } from '@/components/agents-ui/agent-control-bar';
+import { ToolCallVisualizer } from '@/components/agents-ui/tool-call-visualizer';
 import { ChatTranscript } from '@/components/app/chat-transcript';
 import { TileLayout } from '@/components/app/tile-layout';
 import { cn } from '@/lib/shadcn/utils';
+// import { useToolCallTracker } from '@/hooks/use-tool-call-tracker';
 import { Shimmer } from '../ai-elements/shimmer';
+import { useDataChannel } from "@livekit/components-react";
+
+type ToolEvent = {
+  type: "tool_event";
+  tool: string;
+  phase: "start" | "success" | "error";
+  payload?: any;
+  timestamp: number;
+};
+
+function ToolActivity({ events }: { events: ToolEvent[] }) {
+  return (
+    <div className="border p-3 rounded" style={{ maxHeight: '100%', overflowY: 'auto' }}>
+      <h3 className="font-bold mb-2">Tool Activity</h3>
+
+      {events.map((e, i) => (
+        <div key={i} className="text-sm mb-1">
+          {e.phase === "start" && "🛠"}
+          {e.phase === "success" && "✅"}
+          {e.phase === "error" && "❌"}
+
+          <span className="ml-2 font-mono">{e.tool}</span>
+
+          {e.phase !== "start" && e.payload && (
+            <span className="ml-2 text-gray-600">
+              <pre className="whitespace-pre-wrap text-xs font-mono bg-muted/30 px-2 py-1 rounded">
+                {JSON.stringify(e.payload, null, 2)}
+              </pre>
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const MotionBottom = motion.create('div');
 
@@ -93,6 +130,21 @@ export const SessionView = ({
   const { messages } = useSessionMessages(session);
   const [chatOpen, setChatOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  // const { toolCalls } = useToolCallTracker();
+  const [toolEvents, setToolEvents] = useState<ToolEvent[]>([]);
+  const [callSummary, setCallSummary] = useState("");
+  // const { message } = useDataChannel("tool_event")
+  // console.log("Tool events: ", toolEvents)
+
+
+  // console.log(messages, toolCalls)
+  // useEffect(() => {
+  //   if (message) {
+  //     const decoder = new TextDecoder();
+  //     const textMessage = decoder.decode(message.payload);
+  //     console.log(`Received message from ${message}: ${textMessage}`);
+  //   }
+  // }, [message]);
 
   const controls: AgentControlBarControls = {
     leave: true,
@@ -120,9 +172,31 @@ export const SessionView = ({
   //   }
   // }, [session]);
 
+
+  useDataChannel((msg) => {
+    console.log("useDataChannel: ", msg)
+    const data = JSON.parse(new TextDecoder().decode(msg.payload));
+
+    if (data.type === "tool_event") {
+      setToolEvents(prev => [...prev, data]);
+    } else if (data.type === "call_summary") {
+      setCallSummary(data.summary)
+    }
+  });
+
+
   return (
     <section className="bg-background relative z-10 h-svh w-svw overflow-hidden" {...props}>
       <Fade top className="absolute inset-x-4 top-0 z-10 h-40" />
+      {/* Tool Call Visualizer */}
+      <div className="fixed top-4 right-4 z-40 w-80 max-w-[calc(100vw-2rem)]" style={{ height: '70vh'}}>
+        {/* <ToolCallVisualizer toolCalls={toolCalls} maxVisible={5} /> */}
+        <ToolActivity events={toolEvents}/>
+        {callSummary != "" && <div className="border p-3 rounded" style={{ maxHeight: '100%', overflowY: 'auto' }}>
+          {callSummary}
+        </div>
+        }
+      </div>
       {/* transcript */}
       <ChatTranscript
         hidden={!chatOpen}
