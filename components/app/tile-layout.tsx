@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Track } from 'livekit-client';
 import { AnimatePresence, motion } from 'motion/react';
-import { StatementSync } from 'node:sqlite';
 import {
   type TrackReference,
   VideoTrack,

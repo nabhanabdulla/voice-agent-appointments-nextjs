@@ -9,7 +9,7 @@ import {
   AgentControlBar,
   type AgentControlBarControls,
 } from '@/components/agents-ui/agent-control-bar';
-import { ToolCallVisualizer } from '@/components/agents-ui/tool-call-visualizer';
+// import { ToolCallVisualizer } from '@/components/agents-ui/tool-call-visualizer';
 import { ChatTranscript } from '@/components/app/chat-transcript';
 import { TileLayout } from '@/components/app/tile-layout';
 import { cn } from '@/lib/shadcn/utils';
@@ -20,6 +20,7 @@ type ToolEvent = {
   type: 'tool_event';
   tool: string;
   phase: 'start' | 'success' | 'error';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any;
   timestamp: number;
 };
